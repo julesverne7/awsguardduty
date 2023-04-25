@@ -1,0 +1,54 @@
+Parameters:
+  TargetAccounts:
+    Type: List<String>
+    Default: xxx
+
+Resources:
+  GuardDutyMembers:
+    Type: 'AWS::CloudFormation::StackSet'
+    Properties:
+      PermissionModel: SELF_MANAGED
+
+      StackSetName: GuardDutyAdministrator
+      StackInstancesGroup:
+        - DeploymentTargets:
+            Accounts: !Ref TargetAccounts
+          Regions:
+            - !Ref AWS::Region
+      TemplateBody: |
+        Resources:
+          Detector:
+            Type: AWS::GuardDuty::Detector
+            Properties:
+              DataSources:
+                S3Logs:
+                  Enable: true
+              Enable: true
+              FindingPublishingFrequency: FIFTEEN_MINUTES
+
+          AppDev1:
+            Type: AWS::GuardDuty::Member
+            Properties:
+              DetectorId: !Ref Detector
+              Email: xx
+              MemberId: "xxx"
+              Message: You are requesteed to enablee Amazon Guardduty.
+              Status: Invited
+
+          AppDev2:
+            Type: AWS::GuardDuty::Member
+            Properties:
+              DetectorId: !Ref Detector
+              Email: xx
+              MemberId: "xx"
+              Message: You are requested to enable Amazon Guardduty.
+              Status: Invited
+
+          Deployment:
+            Type: AWS::GuardDuty::Member
+            Properties:
+              DetectorId: !Ref Detector
+              Email: xx
+              MemberId: "xx"
+              Message: You are requested to enable Amazon Guardduty.
+              Status: Invited
